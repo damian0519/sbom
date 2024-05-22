@@ -11,8 +11,10 @@ install: skip
 jobs:
   include:
     - name: "SBOM generation example job"
-    - addons:
-        - sbom
+      addons:
+        sbom:
+          on:
+            branch: main
 
 after_success:
   - echo done
