@@ -1,27 +1,22 @@
-language: ruby
-rvm:
-  - 2.7.2
+os: linux
 
-# Install necessary dependencies
-before_install:
-  - gem install bundler
+language: java
+services:
+  - docker
+cache: bundler
+dist: focal
 
-install:
-  - bundle install
+install: skip
 
-# Generate SBOM after running tests
-script:
-  - bundle exec rake test
+jobs:
+  include:
+    - name: "SBOM generation example job"
+    - addons:
+        - sbom
 
-# Add SBOM generation configuration
-addons:
-  sbom:
-    input: .
-    output: ./sbom
-    format:
-      - cyclonedx-json
-      - cyclonedx-xml
-
-# Define after success to ensure SBOM file is created after a successful build
 after_success:
-  - ls -la ./sbom # List the contents of the sbom directory to confirm files are generated
+  - echo done
+  - echo $TRAVIS_TEST_RESULT
+after_failure:
+  - echo failed
+  - echo $TRAVIS_TEST_RESULT
