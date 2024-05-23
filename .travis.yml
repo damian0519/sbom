@@ -2,7 +2,6 @@ language: ruby
 rvm:
   - 2.7.2  # Specify the Ruby version
 
-# Install necessary dependencies
 before_install:
   - gem install bundler
 
