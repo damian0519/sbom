@@ -1,26 +1,12 @@
-language: ruby
-rvm:
-  - 2.7.2  # Specify the Ruby version
-
-before_install:
-  - gem install bundler
-
-install:
-  - bundle install
-
-# Run tests before generating SBOM
-script:
-  - bundle exec rake test
-
-# Addons configuration to generate SBOM
-addons:
-  sbom:
-    input: .
-    output: ./sbom
-    format:
-      - cyclonedx-json
-      - cyclonedx-xml
-
-# Verify SBOM generation
-after_success:
-  - ls -la ./sbom  # List the contents of the SBOM directory to confirm files are generated
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      addons:
+        sbom:                                          # new node
+          on:
+            branch: main                               # branch of the repository
+          run_phase: 'after_success'                   # when SBOM generation should be executed; see below
+          output_format: 'cyclonedx-json'              # SBOM file(s) output format
+          input_dir: './sbom'                          # relative paths within build job environments, see below
+          output_dir: './sbom'
