@@ -1,8 +1,6 @@
 os: linux
-dist: focal
 
 language: ruby
-
 services:
   - docker
 cache:
@@ -20,9 +18,22 @@ jobs:
 after_success:
   - echo done
   - echo $TRAVIS_TEST_RESULT
+  - ls -l sbom
 after_failure:
   - echo failed
   - echo $TRAVIS_TEST_RESULT
+  - ls -l sbom
 
-addons:
-  sbom
+
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      addons:
+        sbom:                                          # new node
+          on:
+            branch: main                               # branch of the repository
+          run_phase: after_success                     # when SBOM generation should be executed; see below
+          output_format: cyclonedx-json                # SBOM file(s) output format
+          input_dir: /sbom/ruby                       # relative paths within build job environments, see below
+          output_dir: /sbom/ruby
