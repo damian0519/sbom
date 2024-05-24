@@ -21,8 +21,8 @@ jobs:
 
 after_success:
   - echo "Build successful"
-  - ls -l sbom
+  - ls -l /sbom
 
 after_failure:
   - echo "Build failed"
-  - ls -l sbom
+  - ls -l /sbom
