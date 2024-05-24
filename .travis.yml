@@ -2,23 +2,28 @@ os: linux
 
 language: ruby
 
-cache:
-  directories:
-    - vendor/bundle
+dist: focal
 
-addons:
-  sbom:
-    input: "."
-    output: "sbom"
-    format: "cyclonedx-json"
+install: skip
 
-before_install:
-  - gem install bundler
+jobs:
+  include:
+    - name: failing
+      script: true
 
-script:
-  - bundle install
-  - echo "Running simple test..."
-  - ruby -e "puts 'Hello, world!'"
+jobs:
+  include:
+    - os: linux
+      dist: focal
+      addons:
+        sbom:                                          # new node
+          on:
+            branch: main                 # branch of the repository
+          run_phase: after_success                   # when SBOM generation should be executed; see below
+          output_format: cyclonedx-json              # SBOM file(s) output format
+          input_dir: .                     # relative paths within build job environments, see below
+          output_dir: /sbom
+
 
 after_success:
   - echo "Build successful"
